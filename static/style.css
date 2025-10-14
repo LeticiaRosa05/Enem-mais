@@ -30,14 +30,13 @@ section {
     & #name, #email {
         padding: 2px;
     }
-
-    /*
+    
     & #campo_consulta {
         background-color: rgb(235, 233, 233);
         margin-top: 10px;
-        padding: 10px;
-        width: 600px;
-        height: 55px;
+        padding: 5px;
+        width: 400px;
+        height: 35px;
         border-radius: 5px;
-    }*/
+    }
 }
