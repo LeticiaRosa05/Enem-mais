@@ -24,10 +24,10 @@
             <button type="submit">Adicionar</button>
         </form>
 
-        <form action="/query" method="GET">
-            <input type="text" id="campo_consulta" placeholder="Escreva a consulta aqui">
+        <form action="/query" method="POST">
+            <input type="text" id="campo_consulta" name="sql_query" placeholder="Escreva a consulta aqui">
             <br><br>
-            <button type="submit">Consultar</button>
+            <button type="submit">Executar</button>
         </form>
 
         <br>

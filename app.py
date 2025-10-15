@@ -25,11 +25,28 @@ def index():
     return render_template('index.html', records=records)
 
 # Rota para exibir os registros conforme consulta na tabela
-@app.route('/query', methods=['GET'])
+@app.route('/query', methods=['GET', 'POST'])
+# Consulta os registros da tabela
 def query():
-    # Consulta os registros da tabela
-    cursor.execute("SELECT * FROM tabela_crud")
-    records = cursor.fetchall()
+    records = []
+
+    if request.method == 'POST':
+        sql_query = request.form['sql_query']
+        print(sql_query)
+
+        try:
+            cursor.execute(sql_query)
+
+            if sql_query.strip().upper().startswith('SELECT'):
+                records = cursor.fetchall()
+                print(f"Numero de registros: {len(records)}")
+                print(f"Primeiros 5 registros {records[:5]}")
+            else:
+                conn.commit()
+                print("Ação não commitada")
+        except Exception as e:
+            print(f"Erro ao executar a query: {e}")
+
     return render_template('index.html', records=records)
 
 # Rota para adicionar um novo registro
@@ -54,7 +71,7 @@ def edit(id):
     if request.method == 'POST':
         name = request.form['name']
         email = request.form['email']
-        
+
         # Atualiza o registro na tabela
         cursor.execute("UPDATE tabela_crud SET name = %s, email = %s WHERE id = %s", (name, email, id))
         conn.commit()
