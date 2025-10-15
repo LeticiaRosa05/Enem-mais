@@ -1,7 +1,7 @@
 # Enem+
 
 # Estrutura do html
-- No index.html, dentro dos '```bash<form action="/add" method="POST">```' estão as ações a serem executadas, que são a adição, edição e exclusão de um nome + email no banco
+- No index.html, dentro dos '```<form action="/add" method="POST">```' estão as ações a serem executadas, que são a adição, edição e exclusão de um nome + email no banco
 - As ações /add, /consulta, /edit e /delete que estão no index.html estão descritas no app.py, assim como as consultas que elas fazem no banco
 - A entrada de uma consulta do usuário ainda ta sendo feita, mas ela já está em desenvolvimento, comentada nas linhas de 27 a 33 no app.py
 
