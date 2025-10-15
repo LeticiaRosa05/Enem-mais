@@ -25,12 +25,12 @@ def index():
     return render_template('index.html', records=records)
 
 # Rota para exibir os registros conforme consulta na tabela
-#@app.route('/consulta', methods=['GET'])
-#def index():
+@app.route('/query', methods=['GET'])
+def query():
     # Consulta os registros da tabela
-#    cursor.execute("SELECT * FROM tabela_crud")
-#    records = cursor.fetchall()
-#    return render_template('index.html', records=records)
+    cursor.execute("SELECT * FROM tabela_crud")
+    records = cursor.fetchall()
+    return render_template('index.html', records=records)
 
 # Rota para adicionar um novo registro
 @app.route('/add', methods=['POST'])
