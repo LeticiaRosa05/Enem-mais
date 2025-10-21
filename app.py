@@ -20,7 +20,7 @@ cursor = conn.cursor()
 @app.route('/')
 def index():
     # Consulta os registros da tabela
-    cursor.execute("SELECT * FROM tabela_crud")
+    cursor.execute("SELECT * FROM enem_goias")
     records = cursor.fetchall()
     return render_template('index.html', records=records)
 
@@ -57,7 +57,7 @@ def add():
         email = request.form['email']
 
         # Insere um novo registro na tabela
-        cursor.execute("INSERT INTO tabela_crud (name, email) VALUES (%s, %s)", (name, email))
+        cursor.execute("INSERT INTO enem_goias (name, email) VALUES (%s, %s)", (name, email))
         conn.commit()
         
     return redirect('/')
@@ -65,7 +65,7 @@ def add():
 # Rota para editar um registro existente
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit(id):
-    cursor.execute("SELECT * FROM tabela_crud WHERE id = %s", (id,))
+    cursor.execute("SELECT * FROM enem_goias WHERE id = %s", (id,))
     record = cursor.fetchone()
 
     if request.method == 'POST':
@@ -73,7 +73,7 @@ def edit(id):
         email = request.form['email']
 
         # Atualiza o registro na tabela
-        cursor.execute("UPDATE tabela_crud SET name = %s, email = %s WHERE id = %s", (name, email, id))
+        cursor.execute("UPDATE enem_goias SET name = %s, email = %s WHERE id = %s", (name, email, id))
         conn.commit()
         
         return redirect('/')
@@ -84,7 +84,7 @@ def edit(id):
 @app.route('/delete/<int:id>')
 def delete(id):
     # Exclui o registro da tabela
-    cursor.execute("DELETE FROM tabela_crud WHERE id = %s", (id,))
+    cursor.execute("DELETE FROM enem_goias WHERE id = %s", (id,))
     conn.commit()
     
     return redirect('/')
