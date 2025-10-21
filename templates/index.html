@@ -14,15 +14,17 @@
     <section>
         <h1>Integrando o Python ao PostgreSQL</h1>
 
-        <form action="/add" method="POST">
-            <label for="name">Nome:</label>
-            <input type="text" id="name" name="name" required>
-            <br><br>
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-            <br><br>
-            <button type="submit">Adicionar</button>
-        </form>
+        <!--
+            <form action="/add" method="POST">
+                <label for="name">Nome:</label>
+                <input type="text" id="name" name="name" required>
+                <br><br>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                <br><br>
+                <button type="submit">Adicionar</button>
+            </form>
+        -->
 
         <form action="/query" method="POST">
             <input type="text" id="campo_consulta" name="sql_query" placeholder="Escreva a consulta aqui">
@@ -34,20 +36,36 @@
 
         <table border="1">
             <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Email</th>
-                <th>Ações</th>
+                <!-- As colunas CO_MUNICIPIO_ESC, CO_MUNICIPIO_PROVA, TP_DEPENDENCIA_ADM_ESC, TP_PRESENCA_CN, TP_PRESENCA_CH, TP_PRESENCA_LC, TP_PRESENCA_MT e CO_UF_PROVA, SG_UF_PROVA foram excluídas da exibição no HTML por terem dados repetitivos, para que a tabela coubesse no tamanho da página -->
+                <th>NO_MINICIPIO_ESC</th>
+                <th>TP_LOCALIZACAO_ESC</th>
+                <th>NO_MUNICIPIO_PROVA</th>
+                <th>NU_NOTA_CN</th>
+                <th>NU_NOTA_CH</th>
+                <th>NU_NOTA_LC</th>
+                <th>NU_NOTA_MT</th>
+                <th>TP_LINGUA</th>
+                <th>TP_STATUS_REDACAO</th>
+                <th>NU_NOTA_REDACAO</th>
             </tr>
             {% for record in records %}
             <tr>
-                <td>{{ record[0] }}</td>
                 <td>{{ record[1] }}</td>
-                <td>{{ record[2] }}</td>
-                <td>
-                    <a href="/edit/{{ record[0] }}">Editar</a>
-                    <a href="/delete/{{ record[0] }}">Excluir</a>
-                </td>
+                <td>{{ record[3] }}</td>
+                <td>{{ record[5] }}</td>
+                <td>{{ record[8] }}</td>
+                <td>{{ record[9] }}</td>
+                <td>{{ record[10] }}</td>
+                <td>{{ record[11] }}</td>
+                <td>{{ record[16] }}</td>
+                <td>{{ record[17] }}</td>
+                <td>{{ record[18] }}</td>
+                <!--
+                    <td>
+                        <a href="/edit/{{ record[0] }}">Editar</a>
+                        <a href="/delete/{{ record[0] }}">Excluir</a>
+                    </td>
+                -->
             </tr>
             {% endfor %}
         </table>
