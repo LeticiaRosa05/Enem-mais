@@ -46,6 +46,7 @@ def query():
                 print("Ação não commitada")
         except Exception as e:
             print(f"Erro ao executar a query: {e}")
+            conn.rollback()
 
     return render_template('index.html', records=records)
 
