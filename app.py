@@ -29,6 +29,7 @@ def index():
 # Consulta os registros da tabela
 def query():
     records = []
+    columns = []
 
     if request.method == 'POST':
         sql_query = request.form['sql_query']
@@ -39,6 +40,8 @@ def query():
 
             if sql_query.strip().upper().startswith('SELECT'):
                 records = cursor.fetchall()
+                columns = [desc[0] for desc in cursor.description]  # nomes das colunas
+                print(f"Colunas: {columns}")
                 print(f"Numero de registros: {len(records)}")
                 print(f"Primeiros 5 registros {records[:5]}")
             else:
@@ -48,4 +51,8 @@ def query():
             print(f"Erro ao executar a query: {e}")
             conn.rollback()
 
-    return render_template('index.html', records=records)
+    return render_template('index.html', records=records, columns=columns)
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
