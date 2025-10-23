@@ -53,6 +53,8 @@ def query():
 
     return render_template('index.html', records=records, columns=columns)
 
+    # falta a exibição dos nomes das colunas (Gemini) + exibição de gráficos na pg edit.html
+
 
 if __name__ == '__main__':
     app.run(debug=True)
