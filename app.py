@@ -19,10 +19,12 @@ cursor = conn.cursor()
 # Rota para exibir os registros da tabela
 @app.route('/')
 def index():
+    columns = []
     # Consulta os registros da tabela
     cursor.execute("SELECT * FROM enem_goias")
     records = cursor.fetchall()
-    return render_template('index.html', records=records)
+    columns = [desc[0] for desc in cursor.description]
+    return render_template('index.html', records=records, columns=columns)
 
 # Rota para exibir os registros conforme consulta na tabela
 @app.route('/query', methods=['GET', 'POST'])
@@ -47,6 +49,9 @@ def query():
             else:
                 conn.commit()
                 print("Ação não commitada")
+                cursor.execute("SELECT * FROM enem_goias")
+                records = cursor.fetchall()
+                columns = [desc[0] for desc in cursor.description]
         except Exception as e:
             print(f"Erro ao executar a query: {e}")
             conn.rollback()
