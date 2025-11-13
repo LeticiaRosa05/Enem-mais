@@ -38,3 +38,12 @@ section {
         height: 35px;
     }
 }
+
+#button_row {
+    display: flex;
+    align-items: center;
+
+    & button {
+        margin: 0px 10px; /* cima/baixo e dps lados */
+    }
+}

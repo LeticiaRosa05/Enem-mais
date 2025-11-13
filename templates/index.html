@@ -14,11 +14,11 @@
         <section>
             <h1>Integrando o Python ao PostgreSQL</h1>
 
-            <form action="/query" method="POST">
-                <input type="text" id="campo_consulta" name="sql_query" placeholder="Escreva a consulta aqui">
-                <br><br>
-                <button type="submit">Executar</button>
-            </form>
+            <div id="button_row">
+                <button type="submit" action="/query">Consultar dados</button><br>
+                <button type="submit" action="/graphs">Gerar gráficos</button><br>
+                <button type="submit" action="/relatorio">Gerar relatório</button>
+            </div>
             <br>
             <table border="1">
                 <thead>
