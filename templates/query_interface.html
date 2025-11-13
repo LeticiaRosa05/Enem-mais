@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enem+</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <meta name="description" content="Enem+ cursos preparatórios">
+</head>
+    <body>
+        <header>
+            <div id="logo"><p>Enem+ cursos preparatórios</p></div>
+        </header>
+        <section>
+            <h1>Integrando o Python ao PostgreSQL</h1>
+
+            <form action="/query" method="POST">
+                <input type="text" id="campo_consulta" name="sql_query" placeholder="Escreva a consulta aqui">
+                <br><br>
+                <button type="submit">Executar</button> <!-- no index, uma consulta padrão do banco retornando todos os dado + titulo + opções "Consultar dados", "Gerar gráficos -> internamente, gerar relatório (dps de gerado um gráfico)" e "Gerar relatório" -->
+            </form>
+            <br>
+            <table border="1">
+                <thead>
+                    <tr>
+                        {% for col in columns %}
+                        <th>{{ col }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in records %}
+                    <tr>
+                        {% for cell in row %}
+                        <td>{{ cell }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% if sql_query %}
+            <p>Nenhuma resultado encontrado para a query.</p>
+            {% endif %}
+        </section>
+    </body>
+</html>
