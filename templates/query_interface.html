@@ -9,10 +9,13 @@
 </head>
     <body>
         <header>
+            <div id="arrow_back"><a href="index.html"><img src="../static/icons/arrow_back.png" alt="arrow_back"></a></div>
             <div id="logo"><p>Enem+ cursos preparatórios</p></div>
         </header>
         <section>
-            <h1>Integrando o Python ao PostgreSQL</h1>
+            <h1>Realize aqui suas consultas</h1>
+            <p id="p_query_pg">Note que estão habilitados comandos que alteram o banco</p>
+            <br>
 
             <form action="/query" method="POST">
                 <input type="text" id="campo_consulta" name="sql_query" placeholder="Escreva a consulta aqui">
