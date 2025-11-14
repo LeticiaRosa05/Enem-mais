@@ -32,31 +32,41 @@ def index():
 def query():
     records = []
     columns = []
+    sql_query = ""
 
     if request.method == 'POST':
-        sql_query = request.form['sql_query']
+        sql_query = request.form.get('sql_query', '')
+        sql_query = sql_query.strip()
+        sql_query = sql_query.replace('\n', ' ').replace('\r', ' ')
         print(sql_query)
 
-        try:
-            cursor.execute(sql_query)
+        if sql_query:
+            try:
+                cursor.execute(sql_query)
 
-            if sql_query.strip().upper().startswith('SELECT'):
-                records = cursor.fetchall()
-                columns = [desc[0] for desc in cursor.description]  # nomes das colunas
-                print(f"Colunas: {columns}")
-                print(f"Numero de registros: {len(records)}")
-                print(f"Primeiros 5 registros {records[:5]}")
-            else:
-                conn.commit()
-                print("Ação não commitada")
-                cursor.execute("SELECT * FROM enem_goias")
-                records = cursor.fetchall()
-                columns = [desc[0] for desc in cursor.description]
-        except Exception as e:
-            print(f"Erro ao executar a query: {e}")
-            conn.rollback()
+                if sql_query.strip().upper().startswith('SELECT'):
+                    records = cursor.fetchall()
+                    columns = [desc[0] for desc in cursor.description]  # nomes das colunas
+                    print(f"Colunas: {columns}")
+                    print(f"Numero de registros: {len(records)}")
+                    print(f"Primeiros 5 registros {records[:5]}")
+                else:
+                    conn.commit()
+                    print("Ação não commitada")
+                    cursor.execute("SELECT * FROM enem_goias")
+                    records = cursor.fetchall()
+                    columns = [desc[0] for desc in cursor.description]
+            except Exception as e:
+                print(f"Erro ao executar a query: {e}")
+                error_message = str(e)
+                if "erro de sintaxe no fim da entrada" in error_message:
+                    ultimos_caracteres = sql_query[-50:]
+                    ascii_codes = [ord(c) for c in ultimos_caracteres]
+                    print(f"Códigos Unicode do final da query: {ascii_codes}")
+                    pass
+                conn.rollback()
 
-    return render_template('index.html', records=records, columns=columns)
+    return render_template('query_interface.html', records=records, columns=columns)
 
     # falta a exibição dos nomes das colunas (Gemini) + exibição de gráficos na pg edit.html
 
