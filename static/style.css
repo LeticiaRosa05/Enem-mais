@@ -10,6 +10,14 @@ header {
     background-color: rgba(6, 6, 214, 0.596);
     color: rgb(227, 253, 253);
     font-size: 24px;
+    display: flex;
+    align-items: flex-start;
+
+    & #arrow_back {
+        width: 1.5rem;
+        height: auto;
+        margin-right: 20px;
+    }
 }
 
 body {
@@ -37,6 +45,10 @@ section {
         width: 400px;
         height: 35px;
     }
+
+    & #p_query_pg {
+        font-size: 16px;
+    }
 }
 
 #button_row {
@@ -45,5 +57,6 @@ section {
 
     & button {
         margin: 0px 10px; /* cima/baixo e dps lados */
+        cursor: pointer;
     }
 }
