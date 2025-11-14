@@ -68,7 +68,12 @@ def query():
 
     return render_template('query_interface.html', records=records, columns=columns)
 
-    # falta a exibição dos nomes das colunas (Gemini) + exibição de gráficos na pg edit.html
+#Página de geração de gráficos
+@app.route('/graphs', methods=['GET', 'POST'])
+def graphs():
+
+
+    return render_template('graphics_interface.html', records=records, columns=columns)
 
 
 if __name__ == '__main__':
