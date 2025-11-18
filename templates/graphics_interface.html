@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Geração de Gráficos</title>
+    <style>
+        /* Estilos básicos para melhor visualização */
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 1000px; margin: auto; }
+        textarea { width: 100%; height: 100px; padding: 10px; box-sizing: border-box; }
+        table, th, td { border: 1px solid #ccc; border-collapse: collapse; padding: 8px; }
+        table { width: 100%; margin-top: 15px; }
+        .grafico-container { margin-top: 30px; text-align: center; }
+        .error { color: red; font-weight: bold; margin-bottom: 15px; }
+        img { max-width: 100%; height: auto; border: 1px solid #eee; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Interface de Geração de Gráficos</h1>
+
+        <a href="/">Voltar para a Tabela Principal</a> | 
+        <a href="/query">Voltar para a Interface de Query</a>
+        <hr>
+
+        <form method="POST" action="/graphs">
+            <label for="sql_query">Insira a Consulta SQL (Obrigatório retornar 2 colunas: Categoria, Valor):</label>
+            <textarea name="sql_query" id="sql_query" required>{{ sql_query_antiga if sql_query_antiga else "SELECT nome_coluna_x, COUNT(*) FROM enem_goias GROUP BY nome_coluna_x ORDER BY 2 DESC LIMIT 10;" }}</textarea><br>
+
+            <label for="tipo_grafico">Tipo de Gráfico:</label>
+            <select name="tipo_grafico" id="tipo_grafico">
+                <option value="bar">Barras</option>
+                <option value="line">Linhas</option>
+            </select>
+            
+            <button type="submit">Gerar Gráfico</button>
+        </form>
+
+        <hr>
+        
+        {% if error %}
+            <p class="error">Erro: {{ error }}</p>
+        {% endif %}
+
+        {% if grafico %}
+            <h2>Resultado do Gráfico</h2>
+            <div class="grafico-container">
+                <img src="{{ grafico }}" alt="Gráfico de Dados da Consulta">
+            </div>
+
+            <h3>Dados da Tabela</h3>
+            <table>
+                <thead>
+                    <tr>
+                        {% for col in columns %}
+                            <th>{{ col }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in records %}
+                        <tr>
+                            {% for item in row %}
+                                <td>{{ item }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Insira uma consulta SQL para gerar o gráfico. Certifique-se de que a consulta retorna pelo menos duas colunas de dados.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
