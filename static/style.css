@@ -21,6 +21,7 @@ header {
 }
 
 body {
+    font-family: Arial, sans-serif;
     background-color: rgb(243, 242, 242);
 }
 
@@ -58,5 +59,55 @@ section {
     & button {
         margin: 0px 10px; /* cima/baixo e dps lados */
         cursor: pointer;
+    }
+}
+
+/* pgde gráficos */
+#graphics_interface {
+    form {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 10px;
+    }
+
+    .container {
+        max-width: 10000px;
+        margin: auto;
+    }
+
+    textarea {
+        margin-top: 5px;
+        width: 900px;
+        height: 100px;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+    table, th, td {
+        border: 1px solid #ccc;
+        border-collapse: collapse;
+        padding: 8px;
+    }
+
+    table {
+        width: 100%;
+        margin-top: 15px;
+    }
+
+    .grafico-container {
+        margin-top: 30px;
+        text-align: center;
+    }
+
+    .error {
+        color: red;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+        border: 1px solid #eee;
     }
 }
