@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect
+from graphics_functions import gerar_grafico_base64
 import psycopg2
 
 app = Flask(__name__, template_folder='templates')
@@ -71,9 +72,32 @@ def query():
 #Página de geração de gráficos
 @app.route('/graphs', methods=['GET', 'POST'])
 def graphs():
+    records = []
+    columns = []
+    grafico_data = ""
+    sql_query = ""
+    error_message = ""
 
+    # 1. Processar a query recebida via POST/Formulário
+    if request.method == 'POST':
+        sql_query = request.form.get('sql_query', '').strip()
+        tipo_grafico = request.form.get('tipo_grafico', 'bar') # tipo de gráfico
+        
+        if sql_query and sql_query.upper().startswith('SELECT'):
+            try:
+                cursor.execute(sql_query)
+                records = cursor.fetchall()
+                columns = [desc[0] for desc in cursor.description]
 
-    return render_template('graphics_interface.html', records=records, columns=columns)
+                if records:
+                    grafico_data = gerar_grafico_base64(records, columns, tipo_grafico)
+                
+            except Exception as e:
+                error_message = f"Erro ao executar a query. Verifique se a consulta retorna duas colunas de dados. Erro: {e}"
+                print(error_message)
+                conn.rollback()
+
+    return render_template('graphics_interface.html', records=records, columns=columns, grafico=grafico_data, sql_query_antiga=sql_query, error=error_message)
 
 
 if __name__ == '__main__':
