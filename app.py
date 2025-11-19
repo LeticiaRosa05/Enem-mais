@@ -145,8 +145,11 @@ def grafico_medias():
         sql_query = default_query
 
         if records and len(columns) >= 2:
-            grafico_barras = gerar_grafico_base64(records, columns, 'bar')
-            grafico_linhas = gerar_grafico_base64(records, columns, 'line')
+            if cidade_selecionada:
+                grafico_barras = gerar_grafico_base64(records, columns, 'bar')
+            else:
+                grafico_barras = gerar_grafico_base64(records, columns, 'bar')
+                grafico_linhas = gerar_grafico_base64(records, columns, 'line')
 
     except Exception as e:
         error_message = f"Erro ao carregar os dados padrão: {e}"
