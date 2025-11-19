@@ -52,14 +52,21 @@ section {
     }
 }
 
-#button_row {
+.button_row {
     display: flex;
     align-items: center;
 
-    & button {
+    & button, a {
         margin: 0px 10px; /* cima/baixo e dps lados */
         cursor: pointer;
     }
+}
+
+.row_div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 10px;
 }
 
 /* pgde gráficos */
