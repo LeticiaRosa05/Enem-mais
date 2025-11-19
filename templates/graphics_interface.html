@@ -18,16 +18,23 @@
                 <h1>Interface de Geração de Gráficos</h1>
 
                 <form method="POST" action="/graphs">
-                    <label for="sql_query">Insira a Consulta SQL:</label>
+                    <label for="sql_query">Insira a Consulta SQL para um gráfico personalizado:</label>
                     <textarea name="sql_query" id="sql_query" placeholder="Insira uma consulta SQL para gerar o gráfico. Note que os eixos do gráfico serão dados pela primeira e segunda coluna do resultaro da query. Sendo assim, certifique-se de que a consulta retorna pelo menos duas colunas de dados." required></textarea><br>
 
-                    <div>
-                        <label for="tipo_grafico">Tipo de Gráfico:</label>
-                        <select name="tipo_grafico" id="tipo_grafico">
-                            <option value="bar">Barras</option>
-                            <option value="line">Linhas</option>
-                        </select>
-                        <button type="submit">Gerar Gráfico</button>
+                    <div class="row_div">
+                        <div>
+                            <label for="tipo_grafico">Tipo de Gráfico:</label>
+                            <select name="tipo_grafico" id="tipo_grafico">
+                                <option value="bar">Barras</option>
+                                <option value="line">Linhas</option>
+                            </select>
+                            <button type="submit">Gerar Gráfico</button>
+                        </div>
+                        <div class="button_row">
+                            <a href="/average" class="button-style">Por médias gerais</a>
+                            <a href="/essay" class="button-style">Por nota da redação</a>
+                            <a href="/subject" class="button-style">Por matéria</a>
+                        </div>
                     </div>
                 </form>
                 <hr>
