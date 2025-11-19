@@ -20,13 +20,15 @@
                 <br>
                 <p>Favor entrar uma cidade caso deseje filtrar o resultado.</p>
                 <br>
-
+                <form method="GET" action="{{ url_for('grafico_medias') }}">
                     <div class="row_div">
                         <div>
-                            <label for="tipo_grafico">Cidade:</label>
-                            <select name="tipo_grafico" id="tipo_grafico">
-                                <option value="bar">--</option>
-                                <option value="line">Linhas</option>
+                            <label for="cidade_filtro">Cidade:</label>
+                            <select name="cidade_filtro" id="cidade_filtro">
+                                <option value="" {% if not cidade_selecionada %}selected{% endif %}>--</option> 
+                                {% for cidade in lista_cidades %}
+                                    <option value="{{ cidade }}" {% if cidade_selecionada == cidade %}selected{% endif %}>{{ cidade }}</option>
+                                {% endfor %}
                             </select>
                             <button type="submit">Aplicar</button>
                         </div>
@@ -52,6 +54,7 @@
                     {% endif %}
 
                     {% if grafico_linhas %}
+                    <br><br>
                         <h2>Gráfico de Linhas</h2>
                         <div class="grafico-container">
                             <img src="{{ grafico_linhas }}" alt="Gráfico de Linhas">
