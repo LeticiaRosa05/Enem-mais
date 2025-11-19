@@ -53,11 +53,11 @@ def gerar_grafico_base64(records, columns, tipo_grafico='bar'):
         y1_label = columns[1]
         y2_label = columns[2]
         
-        x_data = df[x_label].astype(str).head(10)
+        x_data = df[x_label].astype(str).head(25)
 
         try:
-            y1_data = df[y1_label].astype(float).head(10)
-            y2_data = df[y2_label].astype(float).head(10)
+            y1_data = df[y1_label].astype(float).head(25)
+            y2_data = df[y2_label].astype(float).head(25)
         except ValueError as ve:
             print(f"Erro: Dados nas colunas '{y1_label}' ou '{y2_label}' não são numéricos. {ve}")
             return ""
