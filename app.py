@@ -108,27 +108,52 @@ def grafico_medias():
     grafico_linhas = ""
     sql_query = ""
     error_message = None
+    lista_cidades = []
 
-    if request.method == 'GET' or not sql_query: 
+    cidade_selecionada = request.args.get('cidade_filtro', '').strip()
 
-            default_query = 'SELECT "NO_MUNICIPIO_ESC" AS cidade, ROUND(((AVG("NU_NOTA_MT") + AVG("NU_NOTA_LC") + AVG("NU_NOTA_CH") + AVG("NU_NOTA_CN")) / 4)::numeric, 2) AS media_geral, ROUND(AVG("NU_NOTA_REDACAO")::numeric, 2) AS media_redacao, ROUND(AVG("NU_NOTA_MT")::numeric, 2) AS media_matematica, ROUND(AVG("NU_NOTA_LC")::numeric, 2) AS media_linguagens, ROUND(AVG("NU_NOTA_CH")::numeric, 2) AS media_humanas, ROUND(AVG("NU_NOTA_CN")::numeric, 2) AS media_ciencias, COUNT(*) AS total_alunos FROM enem_goias GROUP BY "NO_MUNICIPIO_ESC" HAVING COUNT(*) >= 100 ORDER BY cidade ASC;'
+    try:
+        cursor.execute('SELECT DISTINCT "NO_MUNICIPIO_ESC" FROM enem_goias ORDER BY "NO_MUNICIPIO_ESC" ASC;')
+        lista_cidades = [c[0] for c in cursor.fetchall()]
+    except Exception as e:
+        print(f"Erro ao carregar lista de cidades: {e}")
 
-            try:
-                cursor.execute(default_query)
-                records = cursor.fetchall()
-                columns = [desc[0] for desc in cursor.description]
-                sql_query = default_query
+    select_part = """
+        SELECT "NO_MUNICIPIO_ESC" AS cidade, 
+            ROUND(((AVG("NU_NOTA_MT") + AVG("NU_NOTA_LC") + AVG("NU_NOTA_CH") + AVG("NU_NOTA_CN")) / 4)::numeric, 2) AS media_geral, 
+            ROUND(AVG("NU_NOTA_REDACAO")::numeric, 2) AS media_redacao, 
+            ROUND(AVG("NU_NOTA_MT")::numeric, 2) AS media_matematica, 
+            ROUND(AVG("NU_NOTA_LC")::numeric, 2) AS media_linguagens, 
+            ROUND(AVG("NU_NOTA_CH")::numeric, 2) AS media_humanas, 
+            ROUND(AVG("NU_NOTA_CN")::numeric, 2) AS media_ciencias, 
+            COUNT(*) AS total_alunos 
+        FROM enem_goias 
+        """
 
-                if records and len(columns) >= 2:
-                    grafico_data = gerar_grafico_base64(records, columns, 'bar')
-                    grafico_linhas = gerar_grafico_base64(records, columns, 'line')
+    query_params = ()
+    if cidade_selecionada:
+        default_query = f"{select_part} WHERE \"NO_MUNICIPIO_ESC\" = %s GROUP BY \"NO_MUNICIPIO_ESC\";"
+        query_params = (cidade_selecionada,)
+        
+    else:
+        default_query = f"{select_part} GROUP BY \"NO_MUNICIPIO_ESC\" HAVING COUNT(*) >= 100 ORDER BY cidade ASC;"
 
-            except Exception as e:
-                error_message = f"Erro ao carregar os dados padrão: {e}"
-                print(error_message)
-                conn.rollback()
+    try:
+        cursor.execute(default_query, query_params)
+        records = cursor.fetchall()
+        columns = [desc[0] for desc in cursor.description]
+        sql_query = default_query
 
-    return render_template('graph_avg.html', records=records, columns=columns, grafico_barras=grafico_barras, grafico_linhas=grafico_linhas, sql_query_antiga=sql_query, error=error_message)
+        if records and len(columns) >= 2:
+            grafico_barras = gerar_grafico_base64(records, columns, 'bar')
+            grafico_linhas = gerar_grafico_base64(records, columns, 'line')
+
+    except Exception as e:
+        error_message = f"Erro ao carregar os dados padrão: {e}"
+        print(error_message)
+        conn.rollback()
+
+    return render_template('graph_avg.html', records=records, columns=columns, grafico_barras=grafico_barras, grafico_linhas=grafico_linhas, sql_query_antiga=sql_query, lista_cidades=lista_cidades, cidade_selecionada=cidade_selecionada, error=error_message)
 
 
 @app.route('/essay', methods=['GET', 'POST'])
