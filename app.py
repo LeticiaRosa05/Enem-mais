@@ -99,6 +99,61 @@ def graphs():
 
     return render_template('graphics_interface.html', records=records, columns=columns, grafico=grafico_data, sql_query_antiga=sql_query, error=error_message)
 
+@app.route('/average', methods=['GET', 'POST'])
+def grafico_medias():
+    records = []
+    columns = []
+    grafico_data = ""
+    grafico_barras = ""
+    grafico_linhas = ""
+    sql_query = ""
+    error_message = None
+
+    if request.method == 'GET' or not sql_query: 
+
+            default_query = 'SELECT "NO_MUNICIPIO_ESC" AS cidade, ROUND(((AVG("NU_NOTA_MT") + AVG("NU_NOTA_LC") + AVG("NU_NOTA_CH") + AVG("NU_NOTA_CN")) / 4)::numeric, 2) AS media_geral, ROUND(AVG("NU_NOTA_REDACAO")::numeric, 2) AS media_redacao, ROUND(AVG("NU_NOTA_MT")::numeric, 2) AS media_matematica, ROUND(AVG("NU_NOTA_LC")::numeric, 2) AS media_linguagens, ROUND(AVG("NU_NOTA_CH")::numeric, 2) AS media_humanas, ROUND(AVG("NU_NOTA_CN")::numeric, 2) AS media_ciencias, COUNT(*) AS total_alunos FROM enem_goias GROUP BY "NO_MUNICIPIO_ESC" HAVING COUNT(*) >= 100 ORDER BY cidade ASC;'
+
+            try:
+                cursor.execute(default_query)
+                records = cursor.fetchall()
+                columns = [desc[0] for desc in cursor.description]
+                sql_query = default_query
+
+                if records and len(columns) >= 2:
+                    grafico_data = gerar_grafico_base64(records, columns, 'bar')
+                    grafico_linhas = gerar_grafico_base64(records, columns, 'line')
+
+            except Exception as e:
+                error_message = f"Erro ao carregar os dados padrão: {e}"
+                print(error_message)
+                conn.rollback()
+
+    return render_template('graph_avg.html', records=records, columns=columns, grafico_barras=grafico_barras, grafico_linhas=grafico_linhas, sql_query_antiga=sql_query, error=error_message)
+
+
+@app.route('/essay', methods=['GET', 'POST'])
+def grafico_redacao():
+    records = []
+    columns = []
+    grafico_data = ""
+    sql_query = ""
+    error_message = ""
+
+    print("essay")
+    return render_template('graph_essay.html', records=records, columns=columns, grafico=grafico_data, sql_query_antiga=sql_query, error=error_message)
+
+
+@app.route('/subject', methods=['GET', 'POST'])
+def grafico_materia():
+    records = []
+    columns = []
+    grafico_data = ""
+    sql_query = ""
+    error_message = ""
+
+    print("subject")
+    return render_template('graph_subj.html', records=records, columns=columns, grafico=grafico_data, sql_query_antiga=sql_query, error=error_message)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
