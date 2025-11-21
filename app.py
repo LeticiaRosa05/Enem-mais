@@ -213,14 +213,20 @@ def grafico_quantitativo_nota():
         where_clause = " WHERE \"NO_MUNICIPIO_ESC\" = %s "
         query_params = (cidade_selecionada,)
 
-    group_having_order = f"""
-    GROUP BY 
-        "NO_MUNICIPIO_ESC"
-    HAVING 
-        COUNT(CASE WHEN "{materia_coluna}" < {nota_comparacao} THEN 1 END) > 100
-    ORDER BY 
-        abaixo_{nota_comparacao} DESC;
-    """
+        group_having_order = """
+        GROUP BY 
+            "NO_MUNICIPIO_ESC";
+        """
+
+    else:
+        group_having_order = f"""
+        GROUP BY 
+            "NO_MUNICIPIO_ESC"
+        HAVING 
+            COUNT(CASE WHEN "{materia_coluna}" < {nota_comparacao} THEN 1 END) > 100
+        ORDER BY 
+            abaixo_{nota_comparacao} DESC;
+        """
 
     sql_query = base_query + where_clause + group_having_order
 
