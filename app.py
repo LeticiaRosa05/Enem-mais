@@ -236,8 +236,11 @@ def grafico_quantitativo_nota():
         columns = [desc[0] for desc in cursor.description]
 
         if records and len(columns) >= 3:
-            grafico_barras = gerar_grafico_base64(records, columns, 'bar')
-            grafico_linhas = gerar_grafico_base64(records, columns, 'line')
+            if cidade_selecionada:
+                grafico_barras = gerar_grafico_base64(records, columns, 'bar')
+            else:
+                grafico_barras = gerar_grafico_base64(records, columns, 'bar')
+                grafico_linhas = gerar_grafico_base64(records, columns, 'line')
             
     except Exception as e:
         error_message = f"Erro ao executar a query. Verifique se os dados de comparação estão válidos. Erro: {e}"
