@@ -13,6 +13,14 @@ db_config = {
     'password': '0000'
 }
 
+mapa_materias = {
+    'Redacao': 'NU_NOTA_REDACAO',
+    'Natureza': 'NU_NOTA_CN',
+    'Humanas': 'NU_NOTA_CH',
+    'Linguagens': 'NU_NOTA_LC',
+    'Matematica': 'NU_NOTA_MT'
+}
+
 # Conexão com o banco de dados
 conn = psycopg2.connect(**db_config)
 cursor = conn.cursor()
@@ -163,12 +171,74 @@ def grafico_medias():
 def grafico_redacao():
     records = []
     columns = []
-    grafico_data = ""
+    grafico_barras = ""
+    grafico_linhas = ""
     sql_query = ""
-    error_message = ""
+    error_message = None
+    lista_cidades = []
 
-    print("essay")
-    return render_template('graph_essay.html', records=records, columns=columns, grafico=grafico_data, sql_query_antiga=sql_query, error=error_message)
+    try:
+        cursor.execute('SELECT DISTINCT "NO_MUNICIPIO_ESC" FROM enem_goias ORDER BY "NO_MUNICIPIO_ESC" ASC;')
+        lista_cidades = [c[0] for c in cursor.fetchall()]
+    except Exception as e:
+        print(f"Erro ao carregar lista de cidades: {e}")
+
+    cidade_selecionada = request.args.get('cidade_filtro', '').strip()
+    materia_selecionada_key = request.args.get('materia_filtro', 'Redacao')
+    nota_comparacao_str = request.args.get('nota_comparacao', '800').strip()
+
+    try:
+        nota_comparacao = int(nota_comparacao_str)
+        if nota_comparacao < 0: nota_comparacao = 0
+    except ValueError:
+        nota_comparacao = 800
+        
+    materia_coluna = mapa_materias.get(materia_selecionada_key, 'NU_NOTA_REDACAO')
+
+
+    base_query = f"""
+    SELECT
+        "NO_MUNICIPIO_ESC" AS cidade,
+        COUNT(CASE WHEN "{materia_coluna}" > {nota_comparacao} THEN 1 END) AS acima_{nota_comparacao},
+        COUNT(CASE WHEN "{materia_coluna}" < {nota_comparacao} THEN 1 END) AS abaixo_{nota_comparacao},
+        COUNT(*) AS total_alunos
+    FROM 
+        enem_goias
+    """
+
+    where_clause = ""
+    query_params = ()
+
+    if cidade_selecionada:
+        where_clause = " WHERE \"NO_MUNICIPIO_ESC\" = %s "
+        query_params = (cidade_selecionada,)
+
+    group_having_order = f"""
+    GROUP BY 
+        "NO_MUNICIPIO_ESC"
+    HAVING 
+        COUNT(CASE WHEN "{materia_coluna}" < {nota_comparacao} THEN 1 END) > 100
+    ORDER BY 
+        abaixo_{nota_comparacao} DESC;
+    """
+
+    sql_query = base_query + where_clause + group_having_order
+
+    try:
+        cursor.execute(sql_query, query_params)
+        records = cursor.fetchall()
+        columns = [desc[0] for desc in cursor.description]
+
+        if records and len(columns) >= 3:
+            grafico_barras = gerar_grafico_base64(records, columns, 'bar')
+            grafico_linhas = gerar_grafico_base64(records, columns, 'line')
+            
+    except Exception as e:
+        error_message = f"Erro ao executar a query. Verifique se os dados de comparação estão válidos. Erro: {e}"
+        print(error_message)
+        conn.rollback()
+
+    return render_template('graph_essay.html', records=records, columns=columns, grafico_barras=grafico_barras, grafico_linhas=grafico_linhas,sql_query_antiga=sql_query, lista_cidades=lista_cidades, cidade_selecionada=cidade_selecionada, materia_selecionada=materia_selecionada_key, nota_comparacao_atual=nota_comparacao_str, mapa_materias=mapa_materias, error=error_message)
 
 
 @app.route('/subject', methods=['GET', 'POST'])
