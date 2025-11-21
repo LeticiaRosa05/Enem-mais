@@ -6,7 +6,6 @@
     <title>Enem+</title>
     <link rel="stylesheet" href="../static/style.css">
     <meta name="description" content="Enem+ cursos preparatórios">
-    <title>Geração de Gráficos</title>
 </head>
     <body id="graphics_interface">
         <header>
@@ -30,8 +29,6 @@
                                     <option value="{{ cidade }}" {% if cidade_selecionada == cidade %}selected{% endif %}>{{ cidade }}</option>
                                 {% endfor %}
                             </select>
-                        </div>
-                        <div>
                             <label for="materia_filtro">Matéria:</label>
                             <select name="materia_filtro" id="materia_filtro">
                                 {% for key, value in mapa_materias.items() %}
@@ -40,14 +37,12 @@
                                     </option>
                                 {% endfor %}
                             </select>
-                        </div>
-                        <div>
                             <label for="nota_comparacao">Nota Limite:</label>
                             <input type="number" name="nota_comparacao" id="nota_comparacao" 
                                 value="{{ nota_comparacao_atual if nota_comparacao_atual else 800 }}" 
                                 min="0" max="1000" step="10" required>
+                            <button type="submit">Aplicar</button>
                         </div>
-                        <button type="submit">Aplicar</button>
                         <div class="button_row">
                             <a href="/average" class="button-style">Por médias gerais</a>
                             <a href="/subject" class="button-style">Por matéria</a>
