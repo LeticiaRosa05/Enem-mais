@@ -37,7 +37,6 @@ def index():
 
 # Rota para exibir os registros conforme consulta na tabela
 @app.route('/query', methods=['GET', 'POST'])
-# Consulta os registros da tabela
 def query():
     records = []
     columns = []
@@ -251,15 +250,81 @@ def grafico_quantitativo_nota():
 
 
 @app.route('/subject', methods=['GET', 'POST'])
-def grafico_materia():
+def grafico_MinMax_notas():
     records = []
     columns = []
-    grafico_data = ""
+    grafico_barras = ""
+    grafico_linhas = ""
     sql_query = ""
-    error_message = ""
+    error_message = None
+    lista_cidades = []
 
-    print("subject")
-    return render_template('graph_subj.html', records=records, columns=columns, grafico=grafico_data, sql_query_antiga=sql_query, error=error_message)
+    try:
+        cursor.execute('SELECT DISTINCT "NO_MUNICIPIO_ESC" FROM enem_goias ORDER BY "NO_MUNICIPIO_ESC" ASC;')
+        lista_cidades = [c[0] for c in cursor.fetchall()]
+    except Exception as e:
+        print(f"Erro ao carregar lista de cidades: {e}")
+
+    cidade_selecionada = request.args.get('cidade_filtro', '').strip()
+    materia_selecionada_key = request.args.get('materia_filtro', 'Redacao')
+        
+    materia_coluna = mapa_materias.get(materia_selecionada_key, 'NU_NOTA_REDACAO')
+
+    
+    base_query = f"""
+    SELECT
+        "NO_MUNICIPIO_ESC" AS cidade,
+        MAX("{materia_coluna}") AS maior_nota,
+        MIN(CASE WHEN "{materia_coluna}" > 0 THEN "{materia_coluna}" END) AS menor_nota_valida,
+        COUNT(*) AS total_alunos
+    FROM 
+        enem_goias
+    """
+    
+    where_clause = ""
+    query_params = ()
+    
+    if cidade_selecionada:
+        where_clause = " WHERE \"NO_MUNICIPIO_ESC\" = %s "
+        query_params = (cidade_selecionada,)
+
+    if cidade_selecionada:
+        group_having_order = f"""
+        GROUP BY 
+            "NO_MUNICIPIO_ESC"
+        HAVING 
+            MAX(CASE WHEN "{materia_coluna}" > 0 THEN 1 END) = 1; 
+        """
+    else:
+        group_having_order = f"""
+        GROUP BY 
+            "NO_MUNICIPIO_ESC"
+        HAVING 
+            MAX(CASE WHEN "{materia_coluna}" > 0 THEN 1 END) = 1
+        ORDER BY 
+            cidade ASC;
+        """
+
+    sql_query = base_query + where_clause + group_having_order
+    
+    try:
+        cursor.execute(sql_query, query_params)
+        records = cursor.fetchall()
+        columns = [desc[0] for desc in cursor.description]
+        
+        if records and len(columns) >= 3:
+            
+            plot_columns = [columns[0], columns[1], 'Menor Nota Válida'] 
+
+            grafico_barras = gerar_grafico_base64(records, columns, 'bar')
+            grafico_linhas = gerar_grafico_base64(records, columns, 'line')
+            
+    except Exception as e:
+        error_message = f"Erro ao executar a query. Erro: {e}"
+        print(error_message)
+        conn.rollback()
+
+    return render_template('graph_subj.html', records=records, columns=columns, grafico_barras=grafico_barras, grafico_linhas=grafico_linhas, sql_query_antiga=sql_query, lista_cidades=lista_cidades, cidade_selecionada=cidade_selecionada, materia_selecionada=materia_selecionada_key, mapa_materias=mapa_materias, error=error_message)
 
 
 if __name__ == '__main__':
