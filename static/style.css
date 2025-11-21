@@ -56,9 +56,19 @@ section {
     display: flex;
     align-items: center;
 
-    & button, a {
-        margin: 0px 10px; /* cima/baixo e dps lados */
+    & button {
         cursor: pointer;
+        margin: 0px 10px; /* cima/baixo e dps lados */
+    }
+
+    & a {
+        text-decoration: none;
+        cursor: pointer;
+        border-radius: 15px;
+        padding: 10px;
+        margin: 0px 10px; /* cima/baixo e dps lados */
+        color: white;
+        background-color:rgba(6, 6, 214, 0.596);
     }
 }
 
