@@ -168,7 +168,7 @@ def grafico_medias():
 
 
 @app.route('/essay', methods=['GET', 'POST'])
-def grafico_redacao():
+def grafico_quantitativo_nota():
     records = []
     columns = []
     grafico_barras = ""
