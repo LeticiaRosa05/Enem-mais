@@ -185,13 +185,13 @@ def grafico_quantitativo_nota():
 
     cidade_selecionada = request.args.get('cidade_filtro', '').strip()
     materia_selecionada_key = request.args.get('materia_filtro', 'Redacao')
-    nota_comparacao_str = request.args.get('nota_comparacao', '800').strip()
+    nota_comparacao_str = request.args.get('nota_comparacao', '700').strip()
 
     try:
         nota_comparacao = int(nota_comparacao_str)
         if nota_comparacao < 0: nota_comparacao = 0
     except ValueError:
-        nota_comparacao = 800
+        nota_comparacao = 700
         
     materia_coluna = mapa_materias.get(materia_selecionada_key, 'NU_NOTA_REDACAO')
 
@@ -225,7 +225,7 @@ def grafico_quantitativo_nota():
         HAVING 
             COUNT(CASE WHEN "{materia_coluna}" < {nota_comparacao} THEN 1 END) > 100
         ORDER BY 
-            abaixo_{nota_comparacao} DESC;
+            cidade ASC;
         """
 
     sql_query = base_query + where_clause + group_having_order
