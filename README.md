@@ -15,4 +15,4 @@
 
 # Execução da aplicação
 - Pra executar localmente é necessária a configuração do flask e psyscopg2 no ambiente python, no caso em um ambiente virtual do VS Code do Anaconda Navigator, seguindo o passo a passo desse repositório: https://github.com/aasouzaconsult/Python_inserindo_dados_no_PostgreSQL
-- Após a configuração do ambiente, como orientado no repositório, executar o comando ´´´python app.py´´´ no root do projeto
+- Após a configuração do ambiente, como orientado no repositório, executar o comando ```python app.py``` no root do projeto
